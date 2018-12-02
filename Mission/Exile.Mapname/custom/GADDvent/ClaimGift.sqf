@@ -57,6 +57,11 @@ _sound = selectRandom [		// Music Array
 	"Rudolph"
 ];
 
+if (isNull unitBackpack player) exitWith 
+{ 
+ 	["ErrorTitleAndText", ["GADDvent Calendar", "You need a backpack!"]] call ExileClient_gui_toaster_addTemplateToast; 
+};
+
 _daysNotAllowed = [26,27,28,29,30,31];
 
 if (GADDventOpening) exitWith
