@@ -80,6 +80,12 @@ if (_dayOfXmas in _daysNotAllowed) exitWith
 
 _selectedGift = selectRandom _giftList;
 
+if !([player, _selectedGift] call ExileClient_util_playerCargo_canAdd) exitWith
+{
+	["ErrorTitleAndText", ["GADDvent Calendar", "You need more space in your backpack!"]] call ExileClient_gui_toaster_addTemplateToast;
+	GADDventOpening = false;
+};
+
 _cfgClass = _selectedGift call ExileClient_util_gear_getConfigNameByClassName;
 _isVehicle = false;
 if (_cfgClass == "CfgVehicles") then
