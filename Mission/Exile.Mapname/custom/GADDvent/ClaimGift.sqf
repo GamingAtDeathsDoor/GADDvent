@@ -132,15 +132,22 @@ if (_GADDventNumber < _dayOfXmas) then
 	}
 	else
 	{
-		if (_dayOfXmas == 25) then
+		if ([player, _selectedGift] call ExileClient_util_playerCargo_canAdd) then
 		{
-			unitBackpack player addItemCargoGlobal [_selectedGift, 1];
-			["SuccessTitleAndText", ["GADDvent Calendar", format ["MERRY CHRISTMAS! Thank you for playing %1! Check your Backpack!", _serverName]]] call ExileClient_gui_toaster_addTemplateToast;
+			if (_dayOfXmas == 25) then
+			{
+				[player, _selectedGift, 1] call ExileClient_util_playerCargo_add;
+				["SuccessTitleAndText", ["GADDvent Calendar", format ["MERRY CHRISTMAS! Thank you for playing %1! Check your Backpack!", _serverName]]] call ExileClient_gui_toaster_addTemplateToast;
+			}
+			else
+			{
+				[player, _selectedGift, 1] call ExileClient_util_playerCargo_add;
+				["SuccessTitleAndText", ["GADDvent Calendar", "You just claimed a GADDvent Gift! Check your Backpack! Come back again tomorrow to claim your next gift!"]] call ExileClient_gui_toaster_addTemplateToast;
+			};
 		}
 		else
 		{
-			unitBackpack player addItemCargoGlobal [_selectedGift, 1];
-			["SuccessTitleAndText", ["GADDvent Calendar", "You just claimed a GADDvent Gift! Check your Backpack! Come back again tomorrow to claim your next gift!"]] call ExileClient_gui_toaster_addTemplateToast;
+			["ErrorTitleAndText", ["GADDvent Calendar", "You need more space in your backpack!"]] call ExileClient_gui_toaster_addTemplateToast; 
 		};
 	};
 };
