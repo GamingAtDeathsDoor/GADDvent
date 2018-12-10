@@ -49,6 +49,12 @@ class CfgNetworkMessages
 class CfgSounds
 {
 	sounds[] = {};
+	class AllIWantForXmas
+        {
+               name        = "All I Want For Xmas";
+               sound[]        = { "custom\GADDvent\Music\AllIWantForXmas.ogg", 0.5, 1, 100 };
+               titles[]    = { 0, "" };
+        };
 	class weWishYouAMerryXmas
 	{
 		name		= "Merry Xmas and a Happy New Year";
