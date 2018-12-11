@@ -19,30 +19,32 @@ _giftList = [];
 if (_dayOfXmas == 25) then	// Set the gift selections for Christmas Day here.
 {
 	_giftList = [
-	"srifle_LRR_tna_F",
-	"O_T_APC_Tracked_02_cannon_ghex_F",         //Kamysh
-	"I_APC_Tracked_03_cannon_F",                //Mora tank APC gun
-	"I_APC_Wheeled_03_cannon_F",				//Gorgon
-	"B_APC_Wheeled_01_cannon_F",                //Marshall
-	"srifle_GM6_ghex_F",
-	"srifle_GM6_camo_F",
-	"srifle_GM6_F",
-	"srifle_LRR_camo_F",
-	"srifle_LRR_F",
-	"Exile_Item_RubberDuck"
+	// ["Classname", Quantity], 
+	// It does not matter the quantity of vehicles you give it, there will only ever be ONE spawned. Please also remember the same applies for weapons so just leave it at 1. Other items can have a number assigned.
+	["srifle_LRR_tna_F", 1],
+	["O_T_APC_Tracked_02_cannon_ghex_F", 1],         //Kamysh
+	["I_APC_Tracked_03_cannon_F", 1],             //Mora tank APC gun
+	["I_APC_Wheeled_03_cannon_F", 1],				//Gorgon
+	["B_APC_Wheeled_01_cannon_F", 1],                //Marshall
+	["srifle_GM6_ghex_F", 1],
+	["srifle_GM6_camo_F", 1],
+	["srifle_GM6_F", 1],
+	["srifle_LRR_camo_F", 1],
+	["srifle_LRR_F", 1],
+	["Exile_Item_RubberDuck", 2]
 	];
 }
 else						// Set the gift selection for the other days of the month here.
 {
 	_giftList = [
-	"Exile_Car_Ifrit",
-	"Exile_Car_Hunter",
-	"Exile_Car_Strider",
-	"Exile_Item_Instadoc",
-	"Exile_Weapon_RPK",
-	"Exile_Weapon_PK",
-	"Exile_Weapon_PKP",
-	"Exile_Item_RubberDuck"
+	["Exile_Car_Ifrit", 1],
+	["Exile_Car_Hunter", 1],
+	["Exile_Car_Strider", 1],
+	["Exile_Item_Instadoc", 1],
+	["Exile_Weapon_RPK", 1],
+	["Exile_Weapon_PK", 1],
+	["Exile_Weapon_PKP", 1],
+	["Exile_Item_RubberDuck", 2]
 	];
 };
 
@@ -85,8 +87,10 @@ if (_dayOfXmas in _daysNotAllowed) exitWith
 };
 
 _selectedGift = selectRandom _giftList;
+_selectedGiftClass = _selectedGift select 0;
+_selectedGiftQuantity = _selectedGift select 1;
 
-_cfgClass = _selectedGift call ExileClient_util_gear_getConfigNameByClassName;
+_cfgClass = _selectedGiftClass call ExileClient_util_gear_getConfigNameByClassName;
 _isVehicle = false;
 _isWeapon = false;
 _ammo = [];
@@ -111,10 +115,8 @@ else
 
 if (_isWeapon) then
 {
-	_ammo = getArray (configFile >> "CfgWeapons" >> _selectedGift >> "magazines");
+	_ammo = getArray (configFile >> "CfgWeapons" >> _selectedGiftClass >> "magazines");
 	_ammoSelect = selectRandom _ammo;
-	_crate addWeaponCargoGlobal [_selectedGift, 1];
-	_crate addMagazineCargoGlobal [_ammoSelect, 1];
 };
 
 if (_dayOfXmas == GADDventNumber) exitWith 
@@ -147,12 +149,12 @@ if (_GADDventNumber < _dayOfXmas) then
 	{
 		if (_dayOfXmas == 25) then 
 		{
-			["spawnGADDventVehicleRequest", [_selectedGift,_pin]] call ExileClient_system_network_send;
+			["spawnGADDventVehicleRequest", [_selectedGiftClass,_pin]] call ExileClient_system_network_send;
 			["SuccessTitleAndText", ["GADDvent Calendar", format ["MERRY CHRISTMAS! Thank you for playing %1! Enjoy the ride! PIN: %2", _serverName, _pin]]] call ExileClient_gui_toaster_addTemplateToast;
 		}
 		else
 		{
-			["spawnGADDventVehicleRequest", [_selectedGift,_pin]] call ExileClient_system_network_send;
+			["spawnGADDventVehicleRequest", [_selectedGiftClass,_pin]] call ExileClient_system_network_send;
 			["SuccessTitleAndText", ["GADDvent Calendar", format ["You have claimed your GADDvent gift for Today! Come back again tomorrow to claim another! Enjoy the ride! PIN: %1", _pin]]] call ExileClient_gui_toaster_addTemplateToast;
 		};
 	}
@@ -162,12 +164,12 @@ if (_GADDventNumber < _dayOfXmas) then
 		{
 			if (_isWeapon) then
 			{
-				unitBackpack player addWeaponCargoGlobal [_selectedGift, 1];
+				unitBackpack player addWeaponCargoGlobal [_selectedGiftClass, 1];
 				unitBackpack player addMagazineCargoGlobal [_ammoSelect, _numberOfMags];	
 			}
 			else 
 			{
-				unitBackpack player addItemCargoGlobal [_selectedGift, 1];
+				unitBackpack player addItemCargoGlobal [_selectedGiftClass, _selectedGiftQuantity];
 			};
 			["SuccessTitleAndText", ["GADDvent Calendar", format ["MERRY CHRISTMAS! Thank you for playing %1! Check your Backpack!", _serverName]]] call ExileClient_gui_toaster_addTemplateToast;
 		}
@@ -175,12 +177,12 @@ if (_GADDventNumber < _dayOfXmas) then
 		{
 			if (_isWeapon) then
 			{
-				unitBackpack player addWeaponCargoGlobal [_selectedGift, 1];
+				unitBackpack player addWeaponCargoGlobal [_selectedGiftClass, 1];
 				unitBackpack player addMagazineCargoGlobal [_ammoSelect, _numberOfMags];
 			}
 			else 
 			{
-				unitBackpack player addItemCargoGlobal [_selectedGift, 1];
+				unitBackpack player addItemCargoGlobal [_selectedGiftClass, _selectedGiftQuantity];
 			};
 			["SuccessTitleAndText", ["GADDvent Calendar", "You just claimed a GADDvent Gift! Check your Backpack! Come back again tomorrow to claim your next gift!"]] call ExileClient_gui_toaster_addTemplateToast;
 		};
