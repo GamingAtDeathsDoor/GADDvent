@@ -6,7 +6,8 @@ _uid = getPlayerUID player;
 _dayOfXmas = ExileServerStartTime select 2;
 _pinRandom = (1000 +(round (random 8999)));
 _pin = format ["%1", _pinRandom];
-_serverName = "Gaming At Death's Door";
+_serverName = "Gaming At Death's Door";		// Set your server name here to display in the messages.
+_numberOfMags = 3;							// Set the number of magazines you wish to have spawn with weapons you give.
 
 if (isNil "GADDventNumber") then
 {
@@ -87,6 +88,9 @@ _selectedGift = selectRandom _giftList;
 
 _cfgClass = _selectedGift call ExileClient_util_gear_getConfigNameByClassName;
 _isVehicle = false;
+_isWeapon = false;
+_ammo = [];
+_ammoSelect = "";
 if (_cfgClass == "CfgVehicles") then
 {
 	_isVehicle = true;
@@ -94,6 +98,23 @@ if (_cfgClass == "CfgVehicles") then
 else
 {
 	_isVehicle = false;
+};
+
+if (_cfgClass == "CfgWeapons") then
+{
+	_isWeapon = true;
+}
+else
+{
+	_isWeapon = false;
+};
+
+if (_isWeapon) then
+{
+	_ammo = getArray (configFile >> "CfgWeapons" >> _selectedGift >> "magazines");
+	_ammoSelect = selectRandom _ammo;
+	_crate addWeaponCargoGlobal [_selectedGift, 1];
+	_crate addMagazineCargoGlobal [_ammoSelect, 1];
 };
 
 if (_dayOfXmas == GADDventNumber) exitWith 
@@ -139,12 +160,28 @@ if (_GADDventNumber < _dayOfXmas) then
 	{
 		if (_dayOfXmas == 25) then
 		{
-			unitBackpack player addItemCargoGlobal [_selectedGift, 1];
+			if (_isWeapon) then
+			{
+				unitBackpack player addWeaponCargoGlobal [_selectedGift, 1];
+				unitBackpack player addMagazineCargoGlobal [_ammoSelect, _numberOfMags];	
+			}
+			else 
+			{
+				unitBackpack player addItemCargoGlobal [_selectedGift, 1];
+			};
 			["SuccessTitleAndText", ["GADDvent Calendar", format ["MERRY CHRISTMAS! Thank you for playing %1! Check your Backpack!", _serverName]]] call ExileClient_gui_toaster_addTemplateToast;
 		}
 		else
 		{
-			unitBackpack player addItemCargoGlobal [_selectedGift, 1];
+			if (_isWeapon) then
+			{
+				unitBackpack player addWeaponCargoGlobal [_selectedGift, 1];
+				unitBackpack player addMagazineCargoGlobal [_ammoSelect, _numberOfMags];
+			}
+			else 
+			{
+				unitBackpack player addItemCargoGlobal [_selectedGift, 1];
+			};
 			["SuccessTitleAndText", ["GADDvent Calendar", "You just claimed a GADDvent Gift! Check your Backpack! Come back again tomorrow to claim your next gift!"]] call ExileClient_gui_toaster_addTemplateToast;
 		};
 	};
