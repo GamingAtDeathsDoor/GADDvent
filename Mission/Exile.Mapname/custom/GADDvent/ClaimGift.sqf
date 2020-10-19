@@ -3,7 +3,7 @@
 **/
 
 _uid = getPlayerUID player; 
-_dayOfXmas = ExileServerStartTime select 2;
+_dayOfXmas = systemTime select 2;
 _pinRandom = (1000 +(round (random 8999)));
 _pin = format ["%1", _pinRandom];
 _serverName = "Gaming At Death's Door";		// Set your server name here to display in the messages.
@@ -75,6 +75,12 @@ if (GADDventOpening) exitWith
 GADDventOpening = true;
 
 if !(ExileServerStartTime select 1 == 12) exitWith
+{
+	["ErrorTitleAndText", ["GADDvent Calendar", "It's not even December yet, you scrub!"]] call ExileClient_gui_toaster_addTemplateToast;
+	GADDventOpening = false;
+};
+
+if !(systemTime select 1 == 12) exitWith
 {
 	["ErrorTitleAndText", ["GADDvent Calendar", "It's not even December yet, you scrub!"]] call ExileClient_gui_toaster_addTemplateToast;
 	GADDventOpening = false;
